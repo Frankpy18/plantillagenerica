@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generación de Plantilla Genérica</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+            color: #333;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        h2 {
+            color: #e60000; /* Color Claro */
+            margin-bottom: 20px;
+        }
+        textarea {
+            width: 100%;
+            padding: 10px;
+            font-size: 14px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            height: 150px;
+            resize: vertical;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #e60000;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        button:hover {
+            background-color: #cc0000;
+        }
+        .output-container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            min-height: 200px;
+            border: 1px solid #ccc;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+        .button-container {
+            display: flex;
+            gap: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h2>Generador de Plantilla Genérica</h2>
+
+    <!-- Campo para pegar el texto -->
+    <label for="textoEntrada">Pega el texto de interacción aquí:</label>
+    <textarea id="textoEntrada" placeholder="Pega aquí el texto de interacción..." required></textarea>
+
+    <!-- Contenedor para los botones de generar y borrar -->
+    <div class="button-container">
+        <!-- Botón para generar la plantilla -->
+        <button onclick="generarPlantilla()">Generar Plantilla Genérica</button>
+
+        <!-- Botón para borrar los campos -->
+        <button onclick="borrarCampos()">Borrar</button>
+    </div>
+
+    <!-- Área donde se mostrará la plantilla generada -->
+    <div class="output-container" id="plantillaGenerada">
+        <!-- Aquí se mostrará la plantilla generada -->
+    </div>
+
+    <script>
+        function generarPlantilla() {
+            // Obtener el texto pegado
+            const textoEntrada = document.getElementById("textoEntrada").value;
+
+            // Buscar los valores clave usando expresiones regulares
+            const idInteraccion = textoEntrada.match(/Id de Interacción:\s*([^\n]+)/)?.[1] || "-";
+            const lineaOrigen = textoEntrada.match(/Línea Origen:\s*([^\n]+)/)?.[1] || "-";
+            const nombreCliente = textoEntrada.match(/Nombre Cliente:\s*([^\n]+)/)?.[1] || "";
+            const tipoCliente = textoEntrada.match(/Tipo Cliente:\s*([^\n]+)/)?.[1] || "";
+
+            // Condicional para verificar si "Nombre Cliente" es igual a "Tipo Cliente"
+            let nombreClienteFinal = nombreCliente;
+
+            if (nombreClienteFinal === "Tipo Cliente:") {
+                // Si "Nombre Cliente" y "Tipo Cliente" son iguales, dejar ambos vacíos
+                nombreClienteFinal = "";
+            } else if (!nombreCliente && tipoCliente) {
+                // Si "Nombre Cliente" está vacío, tomar "Tipo Cliente"
+                nombreClienteFinal = tipoCliente;
+            }
+
+            // Si "Nombre Cliente" y "Tipo Cliente" son iguales, "Nombre del Contacto" también debe quedar vacío
+            const nombreContactoFinal = (nombreClienteFinal === "") ? "" : nombreClienteFinal;
+
+            // Generar la plantilla
+            const plantilla = `
+SN IPCC: ${idInteraccion}
+Número Llamante: ${lineaOrigen}
+Nombre Cliente: ${nombreClienteFinal}
+Nombre del Contacto: ${nombreContactoFinal}
+Código Cliente: - 
+Descripción: -`;
+
+            // Mostrar la plantilla generada
+            document.getElementById("plantillaGenerada").textContent = plantilla;
+        }
+
+        function borrarCampos() {
+            // Limpiar el campo de entrada de texto
+            document.getElementById("textoEntrada").value = "";
+
+            // Limpiar el área donde se muestra la plantilla generada
+            document.getElementById("plantillaGenerada").textContent = "";
+        }
+    </script>
+</body>
+</html>
